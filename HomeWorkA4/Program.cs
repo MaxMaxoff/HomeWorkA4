@@ -81,20 +81,26 @@ namespace HomeWorkA4
                 {
                     j = 1;
                     while (j < arr2.Length)
-                        if (arr1[i] == arr2[j] && arr[i,j] == 0)
+                        if (arr1[i] == arr2[j] && arr[i,j] < arr[i - 1, j - 1] + 1)
                         {
                             jj = j;
                             arr[i, j] = arr[i - 1, j - 1] + 1;
                             SupportMethods.Print($"{arr[i, j]}", i * 2 + 2, j + 7, "red");
                             for (int m = i + 1; m < arr1.Length; m++)
                             {
-                                arr[m, j] = arr[i, j];
-                                SupportMethods.Print($"{arr[m, j]}", m * 2 + 2, j + 7);
+                                if (arr[m, j] < arr[i, j])
+                                {
+                                    arr[m, j] = arr[i, j];
+                                    SupportMethods.Print($"{arr[m, j]}", m * 2 + 2, j + 7);
+                                }
                             }
                             for (int m = j + 1; m < arr2.Length; m++)
                             {
-                                arr[i, m] = arr[i, j];
-                                SupportMethods.Print($"{arr[i, m]}", i * 2 + 2, m + 7);
+                                if (arr[i, m] < arr[i, j])
+                                {
+                                    arr[i, m] = arr[i, j];
+                                    SupportMethods.Print($"{arr[i, m]}", i * 2 + 2, m + 7);
+                                }
                             }
                             j = arr2.Length;
                         }
@@ -108,7 +114,12 @@ namespace HomeWorkA4
                 }
 
             // return last item in arr
-            return arr[arr1.Length - 1, arr2.Length - 1];
+            int max = 0;
+            for (int x = 0; x < arr1.Length; x++)
+                for (int y = 0; y < arr2.Length; y++)
+                    if (max < arr[x, y]) max = arr[x, y];
+
+            return max;
         }
 
         /// <summary>
