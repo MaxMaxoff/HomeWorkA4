@@ -282,12 +282,12 @@ namespace HomeWorkA4
         {
             string str = "";
 
-            for (int i = 1; i < fieldX; i++)
+            for (int j = 1; j < fieldY; j++)
             {
                 str += "\n";
-                for (int j = 1; j < fieldY; j++)
+                for (int i = 1; i < fieldX; i++)
                 {
-                    str += $"{field[j, i],3}";
+                    str += $"{field[i, j],3}";
                 }
             }
                 
