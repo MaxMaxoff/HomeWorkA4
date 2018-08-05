@@ -39,6 +39,8 @@ namespace HomeWorkA4
             get { return y; }
         }
 
+        public int sleep;
+
         /// <summary>
         /// size of field
         /// </summary>
@@ -55,10 +57,34 @@ namespace HomeWorkA4
         /// </summary>
         public int[,] Field
         {
-            get
-            {
-                return field;
-            }
+            get { return field; }
+        }
+
+        /// <summary>
+        /// fork in case if movement with equal weight
+        /// </summary>
+        int[,] fork;
+
+        /// <summary>
+        /// propery return fork
+        /// </summary>
+        public int[,] Fork
+        {
+            get { return fork; }
+        }
+
+        /// <summary>
+        /// movement number
+        /// </summary>
+        int moveNumber;
+
+        /// <summary>
+        /// property return and set move number
+        /// </summary>
+        public int MoveNumber
+        {
+            get { return moveNumber; }
+            set { moveNumber = value; }
         }
 
         /// <summary>
@@ -73,7 +99,9 @@ namespace HomeWorkA4
             fieldX = 9;
             fieldY = 9;
             field = new int[9, 9];
+            fork = new int[9 * 9, 9];
             field[this.x, this.y] = 1;
+            MoveNumber = 1;
         }
 
         /// <summary>
@@ -89,137 +117,69 @@ namespace HomeWorkA4
             this.y = random.Next(1, y + 1);
             fieldX = x + 1;
             fieldY = y + 1;
-            field = new int[x + 1, y + 1];
+            field = new int[fieldX, fieldY];
+            fork = new int[x * y + 1, 9];
             field[this.x, this.y] = 1;
+            MoveNumber = 1;
             SupportMethods.Print($"{field[this.x, this.y]}", this.x * 3, this.y + 7);
-            Thread.Sleep(200);
+            Thread.Sleep(sleep);
         }
 
         public bool CheckMoveUR()
         {
-            bool check = false;
-            if (x + 1 < fieldX && y - 2 > 0 && field[x + 1, y - 2] == 0) check = true;
-            return check;
-        }
-
-        /// <summary>
-        /// Move 2xUp and Right
-        /// </summary>
-        public void MoveUR(int move)
-        {
-            MoveAny(x + 1, y - 2, move);
+            fork[moveNumber, 1] = GetAvailableMovementFromCell(x + 1, y - 2);
+            return (CheckMove(x + 1, y - 2));
         }
 
         public bool CheckMoveRU()
         {
-            bool check = false;
-            if (x + 2 < fieldX && y - 1 > 0 && field[x + 2, y - 1] == 0) check = true;
-            return check;
-        }
-
-        /// <summary>
-        /// Move 2xRight and Up
-        /// </summary>
-        public void MoveRU(int move)
-        {
-            MoveAny(x + 2, y - 1, move);
+            fork[moveNumber, 2] = GetAvailableMovementFromCell(x + 2, y - 1);
+            return (CheckMove(x + 2, y - 1));
         }
 
         public bool CheckMoveRD()
         {
-            bool check = false;
-            if (x + 2 < fieldX && y + 1 < fieldY && field[x + 2, y + 1] == 0) check = true;
-            return check;
-        }
-
-        /// <summary>
-        /// Move 2xRight and Down
-        /// </summary>
-        public void MoveRD(int move)
-        {
-            MoveAny(x + 2, y + 1, move);
+            fork[moveNumber, 3] = GetAvailableMovementFromCell(x + 2, y + 1);
+            return (CheckMove(x + 2, y + 1));
         }
 
         public bool CheckMoveDR()
         {
-            bool check = false;
-            if (x + 1 < fieldX && y + 2 < fieldY && field[x + 1, y + 2] == 0) check = true;
-            return check;
-        }
-
-        /// <summary>
-        /// Move 2xDown and Right
-        /// </summary>
-        public void MoveDR(int move)
-        {
-            MoveAny(x + 1, y + 2, move);
+            fork[moveNumber, 4] = GetAvailableMovementFromCell(x + 1, y + 2);
+            return (CheckMove(x + 1, y + 2));
         }
 
         public bool CheckMoveDL()
         {
-            bool check = false;
-            if (x - 1 > 0 && y + 2 < fieldY && field[x - 1, y + 2] == 0) check = true;
-            return check;
-        }
-
-        /// <summary>
-        /// Move 2xDown and Left
-        /// </summary>
-        public void MoveDL(int move)
-        {
-            MoveAny(x - 1, y + 2, move);
+            fork[moveNumber, 5] = GetAvailableMovementFromCell(x - 1, y + 2);
+            return (CheckMove(x - 1, y + 2));
         }
 
         public bool CheckMoveLD()
         {
-            bool check = false;
-            if (x - 2 > 0 && y + 1 < fieldY && field[x - 2, y + 1] == 0) check = true;
-            return check;
-        }
-
-        /// <summary>
-        /// Move 2xLeft and Down
-        /// </summary>
-        public void MoveLD(int move)
-        {
-            MoveAny(x - 2, y + 1, move);
+            fork[moveNumber, 6] = GetAvailableMovementFromCell(x - 2, y + 1);
+            return (CheckMove(x - 2, y + 1));
         }
 
         public bool CheckMoveLU()
         {
-            bool check = false;
-            if (x - 2 > 0 && y - 1 > 0 && field[x - 2, y - 1] == 0) check = true;
-            return check;
-        }
-
-        /// <summary>
-        /// Move 2xLeft and Up
-        /// </summary>
-        public void MoveLU(int move)
-        {
-            MoveAny(x - 2, y - 1, move);
+            fork[moveNumber, 7] = GetAvailableMovementFromCell(x - 2, y - 1);
+            return (CheckMove(x - 2, y - 1));
         }
 
         public bool CheckMoveUL()
         {
-            bool check = false;
-            if (x - 1 > 0 && y - 2 > 0 && field[x - 1, y - 2] == 0) check = true;
-            return check;
+            fork[moveNumber, 8] = GetAvailableMovementFromCell(x - 1, y - 2);
+            return (CheckMove(x - 1, y - 2));
         }
 
         /// <summary>
-        /// Move 2xUp and Left
+        /// Property Check move
         /// </summary>
-        public void MoveUL(int move)
+        /// <returns></returns>
+        public bool CheckMove(int a, int b)
         {
-            MoveAny(x - 1, y - 2, move);
-        }
-
-        public bool CheckMove()
-        {
-            bool check = false;
-            if (x > 0 && x < fieldX && y > 0 && y < fieldY) check = true;
-            return check;
+            return (a > 0 && a < fieldX && b > 0 && b < fieldY) ? (field[a, b] == 0) : (a > 0 && a < fieldX && b > 0 && b < fieldY);
         }
 
         /// <summary>
@@ -227,33 +187,87 @@ namespace HomeWorkA4
         /// </summary>
         /// <param name="x">column</param>
         /// <param name="y">row</param>
-        public void MoveAny(int x, int y, int move)
+        public void MoveAny(int a, int b)
         {
-            this.x = x;
-            this.y = y;
-            field[x, y] = move;
+            x = a;
+            y = b;
+            field[x, y] = moveNumber;
             SupportMethods.Print($"{field[x, y]}", x * 3, y + 7);
-            Thread.Sleep(200);
+            Thread.Sleep(sleep);
         }
 
         /// <summary>
         /// Properties Get Available Movement
         /// </summary>
-        public int GetAvailbleMovement
+        public int GetBestMovement
         {
             get
             {
-                int availableMovement = 0;
-                if (x + 2 < fieldX && y + 1 < fieldY && field[x + 2, y + 1] == 0) availableMovement++;
-                if (x + 1 < fieldX && y + 2 < fieldY && field[x + 1, y + 2] == 0) availableMovement++;
-                if (x - 1 > 0 && y + 2 < fieldY && field[x - 1, y + 2] == 0) availableMovement++;
-                if (x - 2 > 0 && y + 1 < fieldY && field[x - 2, y + 1] == 0) availableMovement++;
-                if (x - 2 > 0 && y - 1 > 0 && field[x - 2, y - 1] == 0) availableMovement++;
-                if (x - 1 > 0 && y - 2 > 0 && field[x - 1, y - 2] == 0) availableMovement++;
-                if (x + 1 < fieldX && y - 2 > 0 && field[x + 1, y - 2] == 0) availableMovement++;
-                if (x + 2 < fieldX && y - 1 > 0 && field[x + 2, y - 1] == 0) availableMovement++;
+                fork[moveNumber, 0] = 9;
+                int min = 9;
 
-                return availableMovement;
+                CheckMoveUR();
+                CheckMoveRU();
+                CheckMoveRD();
+                CheckMoveDR();
+                CheckMoveDL();
+                CheckMoveLD();
+                CheckMoveLU();
+                CheckMoveUL();
+
+                for (int i = 1; i < 9; i++)
+                    if (fork[moveNumber, i] < min)
+                    {
+                        min = fork[moveNumber, i];
+                        fork[moveNumber, 0] = i;
+                    }
+                
+                return fork[moveNumber, 0];
+            }
+        }
+
+        /// <summary>
+        /// Properties Get Last Move
+        /// </summary>
+        public int GetLastMove
+        {
+            get
+            {
+                int curMove = 9;
+
+                if (CheckMoveUR())
+                {
+                    curMove = 1;
+                }
+                if (CheckMoveRU())
+                {
+                    curMove = 2;
+                }
+                if (CheckMoveRD())
+                {
+                    curMove = 3;
+                }
+                if (CheckMoveDR())
+                {
+                    curMove = 4;
+                }
+                if (CheckMoveDL())
+                {
+                    curMove = 5;
+                }
+                if (CheckMoveLD())
+                {
+                    curMove = 6;
+                }
+                if (CheckMoveLU())
+                {
+                    curMove = 7;
+                }
+                if (CheckMoveUL())
+                {
+                    curMove = 8;
+                }
+                return curMove;
             }
         }
 
@@ -263,21 +277,128 @@ namespace HomeWorkA4
         /// <param name="x"></param>
         /// <param name="y"></param>
         /// <returns></returns>
-        public int GetAvailableMovementFromCell(int x, int y)
+        public int GetAvailableMovementFromCell(int a, int b)
         {
             int availableMovement = 0;
-            if (x + 2 < fieldX && y + 1 < fieldY && field[x + 2, y + 1] == 0) availableMovement++;
-            if (x + 1 < fieldX && y + 2 < fieldY && field[x + 1, y + 2] == 0) availableMovement++;
-            if (x - 1 > 0 && y + 2 < fieldY && field[x - 1, y + 2] == 0) availableMovement++;
-            if (x - 2 > 0 && y + 1 < fieldY && field[x - 2, y + 1] == 0) availableMovement++;
-            if (x - 2 > 0 && y - 1 > 0 && field[x - 2, y - 1] == 0) availableMovement++;
-            if (x - 1 > 0 && y - 2 > 0 && field[x - 1, y - 2] == 0) availableMovement++;
-            if (x + 1 < fieldX && y - 2 > 0 && field[x + 1, y - 2] == 0) availableMovement++;
-            if (x + 2 < fieldX && y - 1 > 0 && field[x + 2, y - 1] == 0) availableMovement++;
-
-            return availableMovement;
+            if (CheckMove(a, b))
+            {
+                if (CheckMove(a + 1, b - 2)) if (field[a + 1, b - 2] == 0) availableMovement++;
+                if (CheckMove(a + 2, b - 1)) if (field[a + 2, b - 1] == 0) availableMovement++;
+                if (CheckMove(a + 2, b + 1)) if (field[a + 2, b + 1] == 0) availableMovement++;
+                if (CheckMove(a + 1, b + 2)) if (field[a + 1, b + 2] == 0) availableMovement++;
+                if (CheckMove(a - 1, b + 2)) if (field[a - 1, b + 2] == 0) availableMovement++;
+                if (CheckMove(a - 2, b + 1)) if (field[a - 2, b + 1] == 0) availableMovement++;
+                if (CheckMove(a - 2, b - 1)) if (field[a - 2, b - 1] == 0) availableMovement++;
+                if (CheckMove(a - 1, b - 2)) if (field[a - 1, b - 2] == 0) availableMovement++;
+            }
+            return availableMovement > 0 ? availableMovement : 9;
         }
 
+        /// <summary>
+        /// Method Move
+        /// </summary>
+        /// <param name="curMove">requested move</param>
+        /// <param name="move">number of movement</param>
+        public void Move(int curMove)
+        {
+            switch (curMove)
+            {
+                case 1:
+                    // Move 2xUp and Right
+                    MoveAny(x + 1, y - 2);
+                    break;
+                case 2:
+                    // Move 2xRight and Up
+                    MoveAny(x + 2, y - 1);
+                    break;
+                case 3:
+                    // Move 2xRight and Down
+                    MoveAny(x + 2, y + 1);
+                    break;
+                case 4:
+                    // Move 2xDown and Right
+                    MoveAny(x + 1, y + 2);
+                    break;
+                case 5:
+                    // Move 2xDown and Left
+                    MoveAny(x - 1, y + 2);
+                    break;
+                case 6:
+                    // Move 2xLeft and Down
+                    MoveAny(x - 2, y + 1);
+                    break;
+                case 7:
+                    // Move 2xLeft and Up
+                    MoveAny(x - 2, y - 1);
+                    break;
+                case 8:
+                    // Move 2xUp and Left
+                    MoveAny(x - 1, y - 2);
+                    break;
+
+                default:
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// roll out current step
+        /// </summary>
+        public void StepBack()
+        {
+            for (int i = 1; i < fieldX; i++)
+                for (int j = 1; j < fieldY; j++)
+                { 
+                    if (field[i, j] >= moveNumber)
+                    {
+                        field[i, j] = 0;
+                        SupportMethods.Print($"   ", i * 3, j + 7);
+                        Thread.Sleep(sleep);
+                    } else if ((field[i,j]) == moveNumber - 1)
+                    {
+                        x = i;
+                        y = j;
+                    }
+                }
+        }
+
+        /// <summary>
+        /// roll out fork
+        /// </summary>
+        public void ForkBack()
+        {
+            for (int i = 0; i < 9; i++)
+                fork[moveNumber, i] = 0;
+        }
+
+        /// <summary>
+        /// method roll out till got equal weight of movement
+        /// </summary>
+        public int RollOut()
+        {
+            ForkBack();
+
+            moveNumber--;
+            do
+            {
+                for (int j = 1; j < 9; j++)
+                    if (fork[moveNumber, fork[moveNumber, 0]] == fork[moveNumber, j] && fork[moveNumber, 0] < j)
+                    {
+                        StepBack();
+
+                        fork[moveNumber, 0] = j;
+                        return fork[moveNumber, 0];
+                    }
+                ForkBack();
+                moveNumber--;
+            }
+            while (true);
+        }
+
+        /// <summary>
+        /// Method ToSring overrided
+        /// </summary>
+        /// <returns>array in string</returns>
         public override string ToString()
         {
             string str = "";
@@ -290,7 +411,7 @@ namespace HomeWorkA4
                     str += $"{field[i, j],3}";
                 }
             }
-                
+
             return str;
         }
     }

@@ -135,135 +135,44 @@ namespace HomeWorkA4
             int y = SupportMethods.RequestIntValue("Please type size of field, y value: ");
 
             Knight knight = new Knight(x ,y);
-            // Field field = new Field(x, y);
 
-            int move = 1;
-            int curMove = 1;
-            int min = 0;
+            knight.sleep = 0; // sleep after movement, change it if you need to see movements
 
-            while (move < x * y && curMove < 9)
+            int curMove;
+
+            do
             {
-                move++;
-                SupportMethods.Print($"{move}", 0, 7);
-                min = 9;
+                knight.MoveNumber++;
+                SupportMethods.Print($"Move: {knight.MoveNumber}", 0, 7);
+
                 curMove = 9;
-                if (move < x * y)
+
+                if (knight.MoveNumber < x * y)
                 {
-                    if (knight.CheckMoveUR() && knight.GetAvailableMovementFromCell(knight.X + 1, knight.Y - 2) < min && knight.GetAvailableMovementFromCell(knight.X + 1, knight.Y - 2) > 0)
-                    {
-                        min = knight.GetAvailableMovementFromCell(knight.X + 1, knight.Y - 2);
-                        curMove = 1;
-                    }
-                    if (knight.CheckMoveRU() && knight.GetAvailableMovementFromCell(knight.X + 2, knight.Y - 1) < min && knight.GetAvailableMovementFromCell(knight.X + 2, knight.Y - 1) > 0)
-                    {
-                        min = knight.GetAvailableMovementFromCell(knight.X + 2, knight.Y - 1);
-                        curMove = 2;
-                    }
-                    if (knight.CheckMoveRD() && knight.GetAvailableMovementFromCell(knight.X + 2, knight.Y + 1) < min && knight.GetAvailableMovementFromCell(knight.X + 2, knight.Y + 1) > 0)
-                    {
-                        min = knight.GetAvailableMovementFromCell(knight.X + 2, knight.Y + 1);
-                        curMove = 3;
-                    }
-                    if (knight.CheckMoveDR() && knight.GetAvailableMovementFromCell(knight.X + 1, knight.Y + 2) < min && knight.GetAvailableMovementFromCell(knight.X + 1, knight.Y + 2) > 0)
-                    {
-                        min = knight.GetAvailableMovementFromCell(knight.X + 1, knight.Y + 2);
-                        curMove = 4;
-                    }
-                    if (knight.CheckMoveDL() && knight.GetAvailableMovementFromCell(knight.X - 1, knight.Y + 2) < min && knight.GetAvailableMovementFromCell(knight.X - 1, knight.Y + 2) > 0)
-                    {
-                        min = knight.GetAvailableMovementFromCell(knight.X - 1, knight.Y + 2);
-                        curMove = 5;
-                    }
-                    if (knight.CheckMoveLD() && knight.GetAvailableMovementFromCell(knight.X - 2, knight.Y + 1) < min && knight.GetAvailableMovementFromCell(knight.X - 2, knight.Y + 1) > 0)
-                    {
-                        min = knight.GetAvailableMovementFromCell(knight.X - 2, knight.Y + 1);
-                        curMove = 6;
-                    }
-                    if (knight.CheckMoveLU() && knight.GetAvailableMovementFromCell(knight.X - 2, knight.Y - 1) < min && knight.GetAvailableMovementFromCell(knight.X - 2, knight.Y - 1) > 0)
-                    {
-                        min = knight.GetAvailableMovementFromCell(knight.X - 2, knight.Y - 1);
-                        curMove = 7;
-                    }
-                    if (knight.CheckMoveUL() && knight.GetAvailableMovementFromCell(knight.X - 1, knight.Y - 2) < min && knight.GetAvailableMovementFromCell(knight.X - 1, knight.Y - 2) > 0)
-                    {
-                        min = knight.GetAvailableMovementFromCell(knight.X - 1, knight.Y - 2);
-                        curMove = 8;
-                    }
+                    curMove = knight.GetBestMovement;
                 }
                 else
                 {
-                    if (knight.CheckMoveUR())
-                    {
-                        curMove = 1;
-                    }
-                    if (knight.CheckMoveRU())
-                    {
-                        curMove = 2;
-                    }
-                    if (knight.CheckMoveRD())
-                    {
-                        curMove = 3;
-                    }
-                    if (knight.CheckMoveDR())
-                    {
-                        curMove = 4;
-                    }
-                    if (knight.CheckMoveDL())
-                    {
-                        curMove = 5;
-                    }
-                    if (knight.CheckMoveLD())
-                    {
-                        curMove = 6;
-                    }
-                    if (knight.CheckMoveLU())
-                    {
-                        curMove = 7;
-                    }
-                    if (knight.CheckMoveUL())
-                    {
-                        curMove = 8;
-                    }
+                    curMove = knight.GetLastMove;
                 }
 
-                switch (curMove)
+                if (knight.MoveNumber < x * y && curMove == 9)
                 {
-                    case 1:
-                        knight.MoveUR(move);
-                        break;
-                    case 2:
-                        knight.MoveRU(move);
-                        break;
-                    case 3:
-                        knight.MoveRD(move);
-                        break;
-                    case 4:
-                        knight.MoveDR(move);
-                        break;
-                    case 5:
-                        knight.MoveDL(move);
-                        break;
-                    case 6:
-                        knight.MoveLD(move);
-                        break;
-                    case 7:
-                        knight.MoveLU(move);
-                        break;
-                    case 8:
-                        knight.MoveUL(move);
-                        break;
-
-                    default:
-                        break;
+                    curMove = knight.RollOut();
                 }
-            }
+
+                if (knight.MoveNumber == 1) knight = new Knight(x, y);
+                else knight.Move(curMove);
+            } while (knight.MoveNumber < x * y);
 
             SupportMethods.Print("Done", 0, 8 + y);
 
-            if (move < x * y)
-                SupportMethods.Pause($"Unsucessfull...\n{knight.ToString()}\nPress any key to Continue...");
-            else SupportMethods.Pause($"Sucessfull...\n{knight.ToString()}\nPress any key to Continue...");
-
+            //if (knight.MoveNumber < x * y)
+            //    SupportMethods.Pause($"Unsucessfull...\n{knight.ToString()}\nPress any key to Continue...");
+            //else SupportMethods.Pause($"Sucessfull...\n{knight.ToString()}\nPress any key to Continue...");
+            if (knight.MoveNumber < x * y)
+                SupportMethods.Pause($"Unsucessfull...\nPress any key to Continue...");
+            else SupportMethods.Pause($"Sucessfull...\nPress any key to Continue...");
         }
 
         static void Main(string[] args)
